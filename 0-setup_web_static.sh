@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
-# Script using bash to setup webservers for deployment of simple HTML
-# content
-
-apt-get update && \
-apt-get install -y nginx && \
-mkdir -p -m=755 /data/web_static/{releases/test,shared} || exit 0
-echo 'Testing 123' > /data/web_static/releases/test/index.html
-ln -sf /data/web_static/releases/test/ /data/web_static/current
-chown -hR ubuntu:ubuntu /data/
-insert='\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;}'
-sed -i "37i $insert" /etc/nginx/sites-available/default
-service nginx restart
-exit 0
+# Bash scrip to set up web servers to deploy web_static
+sudo apt-get update
+sudo apt-get -y install nginx
+sudo mkdir -p /data/web_static/shared/
+sudo mkdir -p /data/web_static/releases/test/
+sudo echo "<html>
+  <head>
+  </head>
+  <body>
+    Holberton School
+  </body>
+</html>" | sudo tee /data/web_static/releases/test/index.html
+sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
+sudo chown -R ubuntu:ubuntu /data
+sudo sed -i '53i \\tlocation \/hbnb_static {\n\t\t alias /data/web_static/current;\n\t}' /etc/nginx/sites-available/default
+sudo service nginx restart
